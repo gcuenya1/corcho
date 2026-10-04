@@ -1,0 +1,14 @@
+{
+  "name": "corcho",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Muros colaborativos tipo Padlet para muchos cursos, sobre Netlify Functions + Blobs",
+  "scripts": {
+    "dev": "netlify dev",
+    "local": "node dev/server.mjs"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.1.3"
+  }
+}
