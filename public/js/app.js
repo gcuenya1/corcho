@@ -200,10 +200,10 @@ async function showLanding() {
     renderDash();
   });
   $('#loginBtn').onclick = login;
-  $('#pw').onkeydown = e => e.key === 'Enter' && login();
+  $('#pw').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); login(); } };
   const go = () => { const v = $('#code').value.trim(); const m = v.match(/#\/(b|c)\/([\w]+)/); location.hash = m ? `#/${m[1]}/${m[2]}` : `#/b/${v}`; };
   $('#goBtn').onclick = go;
-  $('#code').onkeydown = e => e.key === 'Enter' && go();
+  $('#code').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); go(); } };
   $('#themeBtn').onclick = toggleTheme;
 }
 
@@ -309,7 +309,7 @@ function courseDialog(c = null) {
     else { const nc = await adminDo({ type: 'createCourse', name, emoji, color }, 'Curso creado 🎒'); if (nc) { S.courseId = nc.id; renderDash(); } }
   };
   $('#cs', m.el).onclick = save;
-  $('#cn', m.el).onkeydown = e => e.key === 'Enter' && save();
+  $('#cn', m.el).onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); save(); } };
 }
 
 function newBoardDialog(courseId) {
@@ -696,7 +696,7 @@ function postView(id) {
         inp.value = '';
         await op({ type: 'comment', id, text, author: b.admin ? (me.name || 'Docente') : me.name });
       };
-      $('#send', m.el).onclick = send; inp.onkeydown = e => e.key === 'Enter' && send();
+      $('#send', m.el).onclick = send; inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); send(); } };
     }
     $$('[data-delc]', m.el).forEach(x => x.onclick = () => op({ type: 'deleteComment', id, commentId: x.dataset.delc }));
     // reacciones dentro del modal
@@ -772,7 +772,7 @@ function composer({ sectionId, edit, lat, lng, x, y } = {}) {
     } else if (t === 'link') {
       panel.innerHTML = `<div class="att-panel"><input type="url" id="lu" placeholder="https://… (YouTube, Vimeo, Spotify, Google Docs/Slides/Forms, Canva, imagen o cualquier web)"><input type="text" id="ln" placeholder="Nombre del enlace (opcional)"><button class="btn" id="la">Agregar enlace</button></div>`;
       const add = () => { let u = $('#lu', panel).value.trim(); if (!u) return; if (!/^https?:\/\//i.test(u)) u = 'https://' + u; st.attach = { kind: embedSrc(u) ? 'video' : isImageUrl(u) ? 'image' : 'link', url: u, name: $('#ln', panel).value.trim() }; drawPanel(); };
-      $('#la', panel).onclick = add; $('#lu', panel).onkeydown = e => e.key === 'Enter' && (e.preventDefault(), add());
+      $('#la', panel).onclick = add; $('#lu', panel).onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); add(); } };
       setTimeout(() => $('#lu', panel)?.focus(), 30);
     } else if (t === 'audio') {
       panel.innerHTML = `<div class="att-panel"><div class="rec"><button class="btn primary" id="recBtn">🎙️ Grabar</button><span id="recT" class="muted">Máximo 3 minutos</span></div><small class="muted">También podés <label style="color:var(--brand);cursor:pointer;text-decoration:underline">subir un audio<input type="file" accept="audio/*" hidden id="afi"></label>.</small></div>`;
@@ -821,7 +821,7 @@ function composer({ sectionId, edit, lat, lng, x, y } = {}) {
   m.el.addEventListener('paste', async e => { const f = [...(e.clipboardData?.files || [])].find(f2 => f2.type.startsWith('image/')); if (f && !busy) { e.preventDefault(); st.tab = 'image'; upload(await compressImage(f), f.name || 'imagen.png', 'image'); } });
   if (b.layout === 'map') {
     const geo = async () => { const q = $('#geo', m.el).value.trim(); if (!q) return; try { const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`, { headers: { 'Accept-Language': 'es' } }).then(r2 => r2.json()); if (!r[0]) return toast('No encontramos ese lugar', true); st.lat = +r[0].lat; st.lng = +r[0].lon; $('#geoInfo', m.el).textContent = '📍 ' + r[0].display_name; } catch { toast('No se pudo buscar el lugar', true); } };
-    $('#geoBtn', m.el).onclick = geo; $('#geo', m.el).onkeydown = e => e.key === 'Enter' && (e.preventDefault(), geo());
+    $('#geoBtn', m.el).onclick = geo; $('#geo', m.el).onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); geo(); } };
   }
   drawPanel();
 
